@@ -1,0 +1,45 @@
+How to new a Maven Project
+
+New Maven Project
+	Filter: org.apache.maven > [Artifact Id] maven-archetype-webapp
+Group Id: g2.product
+Artifact Id: TIA10110-Webapp
+Package: g2.product.TIA10110_Webapp
+-- Y: : [Enter]
+TIA10110-Webapp > pom.xml
+> :18,19 [Modify from version 1.7 to 17]
+  <maven.compiler.source>17<...>
+  <maven.compiler.target>17<...>
+HibernateEx-Web > pom.xml
+> :19-55[^c]
+TIA10110-Webapp > pom.xml # Version 4.0
+> 22[Enter][^v]
+
+[Google Drive David share] TIA101/Git/web.xml [Download]
+TIA10110-Webapp > src > main > webapp > WEB-INF > web.xml [DELETE] 
+[Replace by download "web.xml"]
+TIA10110-Webapp [Right click] > Maven > Update project
+
+TIA10110-Webapp > src > main [new Folder "java", "resources"] > refresh
+--- git ---
+[Open terminal] cd TIA10110-Webapp
+% git init
+% vim .gitignore
+#----------------------
+.settings/
+target/
+bin/
+.classpath
+.project
+.DS_Store
+#----------------------
+
+[Check with "git status"]
+% git st
+----Print as below----
+  .gitignore
+  pom.xml
+  src/
+----------------------
+[Don't ignore case]
+% git config --local core.ignorecase false

@@ -45,10 +45,11 @@ public class TestProdDetail {
 	}
 
 	private static void listAllDetail(ProductDetailDAO dao) {
+		int listOfPage = 5;
 		printHead();
 		List<ProductDetail> pdList = dao.getAll();
 		for (int i = 0; i < pdList.size(); i++) {
-			System.out.print((i != 0) && (i % 5 == 0) ? "-- " + i + "\n": "");
+			System.out.print((i != 0) && (i % listOfPage == 0) ? "-- " + i + "\n": "");
 			System.out.println(pdList.get(i));
 		}
 		System.out.println();

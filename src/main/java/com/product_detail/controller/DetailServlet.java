@@ -31,22 +31,21 @@ public class DetailServlet extends HttpServlet {
 
 		// Query with getAll
 		if ("getAll".equals(action)) {
-			// --- 1. Start query data, don;t need format check ---------------
+			// --- 1. Start query data, don't need format check ---------------
 			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
 			List<ProductDetail> list = detailDao.getAll();
 
 			// --- 2. Query finish. Prepare to send the success view ----------
-			HttpSession session = req.getSession(); // Session Tracking p.147
+			HttpSession session = req.getSession(); // Session Tracking p
 			session.setAttribute("list", list); // Put list(query from DB) to session
 			// --- 3. Send the success view -----------------------------------
 				// webapp(/)detail/listAllDetail_getFromSession.jsp
-			System.out.println("I'm here---------------------------");
+//			System.out.println("I'm here---------------------------");
 			String url = "/detail/listAllDetail_getFromSession.jsp";
-//			String url = "listAllDetail_getFromSession.jsp";
 				// 成功轉交 listAllDetail_getFromSession.jsp | p.192
 			RequestDispatcher successView = req.getRequestDispatcher(url); 
 			successView.forward(req, res);
-			System.out.println("I've forward!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//			System.out.println("I've forward!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return;
 		}
 		

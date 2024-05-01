@@ -14,7 +14,7 @@
 	// 取得 DetailServlet.java(controller)存入 session 的 list 物件
 	// 將提供 page1.file 取得查詢到的總筆數，再由 page1.file 進行分頁
 	// ~= useBean
-	List<ProductDetail> prodDetailList = (List<ProductDetail>)session.getAttribute("list"); // list 變數
+	List<ProductDetail> list = (List<ProductDetail>)session.getAttribute("list"); // list 變數
 %>
 	<%-- p.218 id:以專案分工命名 --%>
 	<%-- 
@@ -60,56 +60,60 @@
 	</style>
 </head>
 <body bgcolor='white'>
-<h2>listAllDetail_getFromSession.jsp</h2>
-<p>Zoaholic: 7</p>
-<%-- 有抓到，沒顯示? --%>
-<%-- 
-<p>prodDetailList.size() = <%=prodDetailList.size()%></p>
- --%>
-<h4>此頁練習採用 EL 的寫法取值:</h4>
-<table id="table-1">
-	<tr>
-		<td>
-			<h3>所有明細的資料 - listAllDetail_getFromSession.jsp</h3>
-			<%-- 
-			src catch fail: forward/sendDirect (/) p.195, 196
-			DGBifReader.java p.184 
-			--%>
-			<h4><a href='select_page.jsp'><img src="imges/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
-		</td>
-	</tr>
-</table>
-
-<table>
-	<tr>
-		<th>明細ID</th>
-		<th>訂單ID</th>
-		<th>產品ID</th>
-		<th>單價</th>
-		<th>數量</th>
-		<th>小計</th>
-	</tr>
+	<h2>listAllDetail_getFromSession.jsp</h2>
+	<%-- 
+	<p>Zoaholic: 1</p>
+	 --%>
+	<%-- 有抓到，沒顯示? -> "list" name mismatch  --%>
+	<%-- 
+	<p>prodDetailList.size() = <%=prodDetailList.size()%></p>
+	 --%>
+	<h4>此頁練習採用 EL 的寫法取值:</h4>
+	<table id="table-1">
+		<tr>
+			<td>
+				<h3>所有明細的資料 - listAllDetail_getFromSession.jsp</h3>
+				<%-- 
+				src catch fail: forward/sendDirect (/) p.195, 196
+				DGBifReader.java p.184 
+				-> typo: src="imges/back1.gif"
+				--%>
+				<h4><a href='select_page.jsp'><img src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
+			</td>
+		</tr>
+	</table>
+	
+	<table>
+		<tr>
+			<th>明細ID</th>
+			<th>訂單ID</th>
+			<th>產品ID</th>
+			<th>單價</th>
+			<th>數量</th>
+			<th>小計</th>
+		</tr>
+		
+		<%-- 
+		<%@ include file="page1.jsp" %> 
+		--%>
+		<%@ include file="page1.file" %> 
+		<%-- c:forEach p.253 --%>
+		
+		<c:forEach var="prodDetail" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">
+			<tr>
+				<td>${prodDetail.prodDetailId}</td>
+				<td>${prodDetail.prodOrdId}</td>
+				<td>${prodDetail.prodId}</td>
+				<td>${prodDetail.unitPrice}</td>
+				<td>${prodDetail.prodCount}</td>
+				<td>${prodDetail.prodSum}</td>
+			</tr>
+		</c:forEach>
+	</table>
 	
 	<%-- 
-	<%@ include file="page1.file" %> 
+	<%@ include file="page2.jsp" %>
 	--%>
-	<%@ include file="page1.jsp" %> 
-	<%-- c:forEach p.253 --%>
-	<c:forEach var="prodDetail" items="${prodDetailList}" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">
-		<tr>
-			<td>${prodDetail.prodDetailId}</td>
-			<td>${prodDetail.prodOrdId}</td>
-			<td>${prodDetail.prodId}</td>
-			<td>${prodDetail.unitPrice}</td>
-			<td>${prodDetail.prodCount}</td>
-			<td>${prodDetail.prodSum}</td>
-		</tr>
-	</c:forEach>
-</table>
-
-<%-- 
-<%@ include file="page2.file" %> 
---%>
-<%@ include file="page2.jsp" %>
+	<%@ include file="page2.file" %> 
 </body>
 </html>

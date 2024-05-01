@@ -11,9 +11,9 @@ public class TestProdDetail {
 		prodDetail = new ProductDetail(null, 11000006, 13000009, 1800, 1, 1800);
 		
 		// Add test
-//		dao.add(prodDetail); // Add 1st detail, should get p_detail_id: 12000012
-//		prodDetail = new ProductDetail(null, 11000006, 13000010, 1000, 1, 1000);
-//		dao.add(prodDetail); // Add 2nd detail, should get p_detail_id: 12000013
+		dao.add(prodDetail); // Add 1st detail, should get p_detail_id: 12000012
+		prodDetail = new ProductDetail(null, 11000006, 13000010, 1000, 1, 1000);
+		dao.add(prodDetail); // Add 2nd detail, should get p_detail_id: 12000013
 		
 //		// Update test
 //		dao.update(new ProductDetail(12000012, 11000005, 13000006, 500, 3, 1500));
@@ -22,11 +22,11 @@ public class TestProdDetail {
 //		dao.delete(12000013);
 //		
 //		// findByPK test
-		int key = 12000013; // 12000001 | 12000013
-		prodDetail = dao.findByPK(key);
-		System.out.println("findByPK(" + key + ") :"); // HERE
-		printHead();
-		System.out.println(prodDetail);
+//		int key = 12000013; // 12000001 | 12000013
+//		prodDetail = dao.findByPK(key);
+//		System.out.println("findByPK(" + key + ") :"); // HERE
+//		printHead();
+//		System.out.println(prodDetail);
 		
 		// getAll test
 		listAllDetail(dao);

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- 41-1: 核心功能標籤庫(Core tag library) p.248 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
@@ -33,9 +34,13 @@
 		<tr><td><h3>TIA10110-Webapp Product detail: Home</h3><h4>( MVC )</h4></td></tr>
 	</table>
 	<p>This is the Home page for TIA10110-Webapp Product detail: Home</p>
-	<p>Zoaholic: 3</p>
+	<%-- 
+	<p>Zoaholic: 2</p>
+	 --%>
 	<h3>資料查詢:</h3>
-	
+	<%--
+	EL p.228 
+	 --%>
 	<%-- ErrorMsgs list --%>
 	<c:if test="${not empty errorMsgs}">
 		<font style="color:red">請修正以下錯誤:</font>
@@ -47,10 +52,10 @@
 	</c:if>
 	
 	<ul>
-	<!-- 404 -1. Cannot find listAllDetail_getFromSession.jsp -->
-		<!-- BUG: Don't know why but work. Write usbBean & after --0430 09:01 -->
+	<%-- 404 -1. Cannot find listAllDetail_getFromSession.jsp --%>
+		<%-- BUG: Don't know why but work. Maybe Project > Clean... --%>
 		<li><a href='detail.do?action=getAll'>List</a> all Detail (getFromSession).<br></li>
-	<!-- Not print data -->
+	<%-- Not print data : Controller: session.setAttribute("list", list) --%>
 		<li><a href='listAllDetail_byDAO.jsp'>List</a> all Detail (byDAO).<br></li>
 		
 		<li>
@@ -68,30 +73,32 @@
 				<b>輸入明細ID (Ex: 12000001):</b>
 				<input type="text" name="prod_detail_id">
 				<input type="hidden" name="action" value="getOne_For_Display">
-				<input type="submit" value="送出" onclick="fun1()">
+				<input type="button" value="送出" onclick="fun1()">
 				<h4>(資料格式驗証 by JavaScript).</h4>
 			</FORM>
 		</li>
 		
-		<!-- Why useBean here? p.218 -->
+		<%-- Why useBean here? p.218 -> c:forEach using --%>
 		
 		<jsp:useBean id="detailDao" scope="page" class="com.product_detail.model.ProductDetailDAOImpl" />
 		 
-		<li> <!-- BUG: Options not show 4/30 -->
-			<FROM METHOD="post" ACTION="detail.do">
+		<li> <%-- BUG: Options not show 4/30 -> 1) useBean id: case mismatch. 2) c:forEach var="productDetail" --%>
+			<FORM METHOD="post" ACTION="detail.do">
 				<b>選擇明細ID:</b>
 				<select size="1" name="prod_detail_id">
-					<c:forEach var="prodDetail" items="${detailDAO.all}"> ${detailDAO.all} <%-- ?什麼語法? .all 是什麼 --%>
-						<option value="${prodDetail.prodDetailId}">${prodDetail.prodDetailId}					
+				
+					<c:forEach var="productDetail" items="${detailDao.all}"> <%-- ?什麼語法? .all 是什麼 -> getAll() 移除 get/set --%>
+						<option value="${productDetail.prodDetailId}">${productDetail.prodDetailId}					
 					</c:forEach>
 				</select>
 				<input type="hidden" name="action" value="getOne_For_Display">
 				<input type="submit" value="送出">
-			</FROM>
+			</FORM>
 		</li>
 		 	
 	</ul>
 	
+	<%-- JS 檢查錯誤後，還是有紅字(controller check)跳出 -> JS verify: input type="button" --%>
 	<script>
 		function fun1() {
 			with(document.form1){

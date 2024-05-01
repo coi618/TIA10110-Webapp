@@ -53,8 +53,10 @@ merge 2 style?
 </head>
 <body bgcolor='white'>
 	<h4>此頁練習採用 EL 的寫法取值:</h4>
+	<%-- 
 	<p>Zoaholic: 1</p>
-	<table>
+	 --%>
+	<table id="table-1">
 		<tr>
 			<td>
 				<h3>所有員工資料 - listAllDetail_byDAO.jsp</h3>
@@ -73,12 +75,17 @@ merge 2 style?
 			<th>小計</th>
 		</tr>
 		
-		<%@ include file="page1.jsp" %> 
-		<%-- 
 		<%@ include file="page1.file" %>
+		<%-- 
+		<%@ include file="page1.jsp" %> 
 		--%>
 		<%-- c:forEach p.253 --%>
-		<c:forEach var="prodDetail" items="${prodDetailList}">
+		<%-- 
+		<p>list: </p>
+		<c:out value="${list}"></c:out>
+		<p>pageIndex=<%=pageIndex%> | ${pageIndex}</p> <%-- 0 | "" -- %>
+		 --%>
+		<c:forEach var="prodDetail" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>">
 			<tr>
 				<td>${prodDetail.prodDetailId}</td>
 				<td>${prodDetail.prodOrdId}</td>
@@ -90,8 +97,8 @@ merge 2 style?
 		</c:forEach> 
 	</table>
 	<%-- 
-	<%@ include file="page2.file" %>
-	--%>
 	<%@ include file="page2.jsp" %> 
+	--%>
+	<%@ include file="page2.file" %>
 	</body>
 </html>

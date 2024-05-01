@@ -33,15 +33,53 @@ public class DetailServlet extends HttpServlet {
 		if ("getAll".equals(action)) {
 			// --- 1. Start query data, don't need format check ---------------
 			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
-			List<ProductDetail> list = detailDao.getAll();
+//			List<ProductDetail> list = detailDao.getAll();
+			List<ProductDetail> prodDetailList = detailDao.getAll();
 
 			// --- 2. Query finish. Prepare to send the success view ----------
-			HttpSession session = req.getSession(); // Session Tracking p
-			session.setAttribute("list", list); // Put list(query from DB) to session
+			HttpSession session = req.getSession(); // Session Tracking p.147
+//			session.setAttribute("list", list); // Put list(query from DB) to session
+			session.setAttribute("list", prodDetailList); // useBean id = "list" + page*.file use "list"
+			/*
+			 * Check what session.XetAttribute("XXX") carry
+			System.out.println("session.getAttribute(\"list\")" + session.getAttribute("list"));
+			*/
 			// --- 3. Send the success view -----------------------------------
 				// webapp(/)detail/listAllDetail_getFromSession.jsp
 //			System.out.println("I'm here---------------------------");
 			String url = "/detail/listAllDetail_getFromSession.jsp";
+			// p.195 1) 對項先執行(不管 4xx 5xx，先把 URL 貼過來) -> JSP file [/detail/http:/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
+//			url = "http://localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
+			// 2) http:// 拿掉 -> JSP file [/detail/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
+//			url = "localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
+			// 3) 保留 / -> JSP file [/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
+//			url = "/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
+			// 4) 移除 (ROOT: /localhost:8081) -> JSP file [/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
+//			url = "/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
+			// 5) 移除 (專案名: /Webapp) -> Worked, url: http://localhost:8081/TIA10110-Webapp/detail/detail.do?action=getAll
+//			url = "/detail/listAllDetail_getFromSession.jsp";
+			// 6) 移除 同層(select_page.jsp)資料夾 /detail -> Worked, url: http://localhost:8081/TIA10110-Webapp/detail/detail.do?action=getAll
+//			url = "listAllDetail_getFromSession.jsp";
+			// Test p.109
+//			System.out.println(
+//					"req.getScheme() = " 		+ req.getScheme() + 
+//					"\nreq.getServerName() = " 	+ req.getServerName() +
+//					"\nreq.getServerPort() = " 	+ req.getServerPort() +
+//					"\nreq.getContextPath() = " + req.getContextPath() +
+//					"\nreq.getServletPath() = " + req.getServletPath() +
+//					
+//					"\nreq.getPathInfo() = " 	+ req.getPathInfo() +
+//					"\nreq.getPathTranslated() = " + req.getPathTranslated() +
+//					"\nreq.getRequestURI() = " 	+ req.getRequestURI() +
+//					"\nreq.getQueryString() = " + req.getQueryString() +
+//					"\nreq.getProtocol() = " 	+ req.getProtocol() +
+//					
+//					"\nreq.getMethod() = " 		+ req.getMethod() +
+//					"\nreq.getHeader(\"Content-Type\") = " + req.getHeader("Content-Type") +
+//					"\nreq.getContentType() = " + req.getContentType() +
+//					"\nreq.getContentLength() = " + req.getContentLength() 
+//					);
+			
 				// 成功轉交 listAllDetail_getFromSession.jsp | p.192
 			RequestDispatcher successView = req.getRequestDispatcher(url); 
 			successView.forward(req, res);

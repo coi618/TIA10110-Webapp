@@ -14,12 +14,15 @@
 	// 取得 DetailServlet.java(controller)存入 session 的 list 物件
 	// 將提供 page1.file 取得查詢到的總筆數，再由 page1.file 進行分頁
 	// ~= useBean
-	List<ProductDetail> list = (List<ProductDetail>)session.getAttribute("list"); // list 變數
+	//List<ProductDetail> list = (List<ProductDetail>)session.getAttribute("list"); // list 變數
 %>
-	<%-- p.218 id:以專案分工命名 --%>
 	<%-- 
+	1) p.218 id:以專案分工命名 -> page1/2.file 裡的 list 如何設定?
+	2) 以上類似於: <%myPackage.HelloBean hello = new myPackage.HelloBean(); %>
 	<jsp:useBean id="prodDetailList" scope="session" type="java.util.List<ProductDetail>" /> 
+	<% List<ProductDetail> prodDetailList = XXXlist;%> 
 	--%>
+	<jsp:useBean id="list" scope="session" type="java.util.List<ProductDetail>" />
 	
 <html>
 <head>
@@ -57,16 +60,21 @@
 			padding: 5px;
 			text-align: center;
 		}
+		img#back {
+			width: 100px; 
+			height: 32px; 
+			border: 0;
+		}
 	</style>
 </head>
 <body bgcolor='white'>
 	<h2>listAllDetail_getFromSession.jsp</h2>
-	<%-- 
-	<p>Zoaholic: 1</p>
+	<%--
+	<p>list=<%=list%></p>
+	<p>NOT useBean id prodDetailList=<%=prodDetailList%></p>
 	 --%>
-	<%-- 有抓到，沒顯示? -> "list" name mismatch  --%>
 	<%-- 
-	<p>prodDetailList.size() = <%=prodDetailList.size()%></p>
+	<p>Zoaholic: 2</p>
 	 --%>
 	<h4>此頁練習採用 EL 的寫法取值:</h4>
 	<table id="table-1">
@@ -77,8 +85,13 @@
 				src catch fail: forward/sendDirect (/) p.195, 196
 				DGBifReader.java p.184 
 				-> typo: src="imges/back1.gif"
+				<h4><a href='select_page.jsp'><img id="back" src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
 				--%>
-				<h4><a href='select_page.jsp'><img src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
+				<h4>
+					<a href='select_page.jsp'>
+						<img id="back" src="images/back1.gif">
+					回首頁</a>
+				</h4>
 			</td>
 		</tr>
 	</table>
@@ -98,7 +111,14 @@
 		--%>
 		<%@ include file="page1.file" %> 
 		<%-- c:forEach p.253 --%>
-		
+		<%--
+		原始寫法
+		<c:forEach var="prodDetail" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">  
+		這個寫法取不到值
+		<c:forEach var="prodDetail" items="${prodDetailList}" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">
+		這個寫法取到值
+		<c:forEach var="prodDetail" items="<%=prodDetailList%>" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">
+		--%>
 		<c:forEach var="prodDetail" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex + rowsPerPage - 1%>">
 			<tr>
 				<td>${prodDetail.prodDetailId}</td>

@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Select Page 0201</title>
+	<title>Select Page</title>
 	<style>
 		table#table-1 {
 			width: 450px;
@@ -54,31 +54,25 @@
 	<ul>
 	<%-- 404 -1. Cannot find listAllDetail_getFromSession.jsp --%>
 		<%-- BUG: Don't know why but work. Maybe Project > Clean... --%>
-		<%-- 
-		<li><a href='detail.do?action=getAll'>List</a> all Detail (getFromSession).<br></li> 
-		--%>
+		<li><a href='detail.do?action=getAll'>List</a> all Detail (getFromSession).<br></li>
 	<%-- Not print data : Controller: session.setAttribute("list", list) --%>
-		
-		<%-- 
-		<li><a href='listAllDetail_byDAO.jsp'>List</a> all Detail (byDAO).<br></li> 
-		// Since getAll doesn't need to check, link to JSP directly.
-		--%>
-		<li><a href='listAllDetail.jsp'>List</a> all Detail.<br><br></li>
+		<li><a href='listAllDetail_byDAO.jsp'>List</a> all Detail (byDAO).<br></li>
 		
 		<li>
 			<FORM METHOD="post" ACTION="detail.do" >
 			<b>輸入明細ID (Ex: 12000001):</b>
-			<input type="text" name="prodDetailId">
-			<input type="hidden" name="action" value="getOneForDisplay">
+			<input type="text" name="prod_detail_id">
+			<input type="hidden" name="action" value="getOne_For_Display">
 			<input type="submit" value="送出">
+			<h4>(資料格式驗証 by Controller).</h4>
 			</FORM>
 		</li>
 		
 		<li>
 			<FORM METHOD="post" ACTION="detail.do" name="form1">
 				<b>輸入明細ID (Ex: 12000001):</b>
-				<input type="text" name="prodDetailId">
-				<input type="hidden" name="action" value="getOneForDisplay">
+				<input type="text" name="prod_detail_id">
+				<input type="hidden" name="action" value="getOne_For_Display">
 				<input type="button" value="送出" onclick="fun1()">
 				<h4>(資料格式驗証 by JavaScript).</h4>
 			</FORM>
@@ -91,31 +85,28 @@
 		<li> <%-- BUG: Options not show 4/30 -> 1) useBean id: case mismatch. 2) c:forEach var="productDetail" --%>
 			<FORM METHOD="post" ACTION="detail.do">
 				<b>選擇明細ID:</b>
-				<select size="1" name="prodDetailId">
+				<select size="1" name="prod_detail_id">
 				
 					<c:forEach var="productDetail" items="${detailDao.all}"> <%-- ?什麼語法? .all 是什麼 -> getAll() 移除 get/set --%>
 						<option value="${productDetail.prodDetailId}">${productDetail.prodDetailId}					
 					</c:forEach>
 				</select>
-				<input type="hidden" name="action" value="getOneForDisplay">
+				<input type="hidden" name="action" value="getOne_For_Display">
 				<input type="submit" value="送出">
 			</FORM>
 		</li>
 		 	
 	</ul>
 	
-	<h3>明細管理</h3>
-	<ul><li><a href='addDetail.jsp'>Add</a> a new Detail.</li></ul>
-	
 	<%-- JS 檢查錯誤後，還是有紅字(controller check)跳出 -> JS verify: input type="button" --%>
 	<script>
 		function fun1() {
 			with(document.form1){
-				if (prodDetailId.value=="") {
+				if (prod_detail_id.value=="") {
 					alert("請輸入明細ID!");
-				} else if (isNaN(prodDetailId.value)){ // isNaN(): Not a Number
+				} else if (isNaN(prod_detail_id.value)){ // isNaN(): Not a Number
 					alert("明細ID格式不正確"); 
-				} else if ((prodDetailId.value > 12999999) || (prodDetailId.value < 12000000))  {
+				} else if ((prod_detail_id.value > 12999999) || (prod_detail_id.value < 12000000))  {
 					alert("請輸入介於12000000~12999999之間的數字!");
 				} else {
 					submit();

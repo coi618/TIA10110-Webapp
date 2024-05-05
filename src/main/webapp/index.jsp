@@ -13,5 +13,8 @@
 </head>
 <body>
 <h2>Hello World ! 你好世界 ! こんにちは</h2>
+	<form method="get" action="TryJDBC_1">
+		<input type="submit">
+	</form>
 </body>
 </html>

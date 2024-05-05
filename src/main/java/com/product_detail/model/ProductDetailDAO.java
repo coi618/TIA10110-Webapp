@@ -8,4 +8,7 @@ public interface ProductDetailDAO {
 	void delete(Integer prodDetailId); // Not use
 	ProductDetail findByPK(Integer prodDetailId);
 	List<ProductDetail> getAll();
+	
+	// Universal query
+//	public List<ProductDetail> getAll(Map<String, String[]> map);
 }

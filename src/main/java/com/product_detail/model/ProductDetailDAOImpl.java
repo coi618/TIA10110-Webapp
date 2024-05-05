@@ -10,7 +10,33 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
+import javax.sql.DataSource;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 public class ProductDetailDAOImpl implements ProductDetailDAO {
+	// 一個應用程式中，針對一個資料庫，共用一個 DataSource 即可
+//	TIA10110-Webapp >> web.xml nl: 22-27			
+// 	<resource-ref>
+// 		<description>DB Connection</description>
+// 		<res-ref-name>jdbc/G2Product</res-ref-name>
+// 		<res-type>javax.sql.DataSource</res-type>
+// 		<res-auth>Container</res-auth>
+//	</resource-ref>
+	private static DataSource ds = MyUtil.myConnectionPool();
+//	static {
+//		try {
+//			Context ctx = new InitialContext();
+//			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/G2Product");
+//		} catch (NamingException ne) {
+//			System.err.println("Error when establish DataSource.");
+//			ne.printStackTrace();
+//		}
+//	}
+//	ds = MyUtil.myConnectionPool();
+	
 	// Prepare SQL commands
 	private static final String PROD_DETAIL_COL = 
 			"(prod_ord_id, prod_id, unit_price, prod_count, prod_sum)";
@@ -25,10 +51,11 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 	private static final String DELETE_STMT = "DELETE FROM product_detail WHERE prod_detail_id = ?";
 	private static final String FIND_BY_PK = "SELECT * FROM product_detail WHERE prod_detail_id = ?";
 	private static final String GET_ALL = "SELECT * FROM product_detail";
-	
-	static { // DB step: 3-1
-		MyUtil.myLoadDriver();
-	}
+
+	// Change to Connection pool
+//	static { // DB step: 3-1
+//		MyUtil.myLoadDriver();
+//	}
 	
 	@Override
 	public void add(ProductDetail prodDetail) {
@@ -36,7 +63,10 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			// Change to Connection pool
+//			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			con = ds.getConnection();
+			
 			pstmt = con.prepareStatement(INSERT_STMT);
 			// "(prod_ord_id, prod_id, unit_price, prod_count, prod_sum)";
 			pstmt.setInt(1, prodDetail.getProdOrdId());
@@ -61,7 +91,9 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+//			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			con = ds.getConnection();
+			
 			pstmt = con.prepareStatement(UPDATE_STMT);
 			//"prod_ord_id = ?, prod_id = ?, unit_price = ?, prod_count = ?, prod_sum = ?"
 			pstmt.setInt(1, prodDetail.getProdOrdId());
@@ -88,7 +120,9 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		PreparedStatement pstmt = null;
 		
 		try {
-			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+//			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			con = ds.getConnection();
+			
 			pstmt = con.prepareStatement(DELETE_STMT);
 			
 			pstmt.setInt(1, prodDetailId);
@@ -111,7 +145,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		ProductDetail prodDetail = null;
 		
 		try {
-			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+//			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			con = ds.getConnection();
 			
 			pstmt = con.prepareStatement(FIND_BY_PK);	// Get SQL command
 			pstmt.setInt(1, prodDetailId);	// Setup SQL command
@@ -145,7 +180,9 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		List<ProductDetail> pdList = new ArrayList<ProductDetail>();
 		
 		try {
-			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+//			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
+			con = ds.getConnection();
+			
 			pstmt = con.prepareStatement(GET_ALL);	// Set SQL command
 			
 			rs = pstmt.executeQuery();	// Send SQL command

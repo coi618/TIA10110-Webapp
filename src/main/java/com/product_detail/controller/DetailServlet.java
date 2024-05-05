@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.product_detail.model.ProductDetail;
-import com.product_detail.model.ProductDetailDAO;
-import com.product_detail.model.ProductDetailDAOImpl;
+import com.product_detail.model.*;
 
 public class DetailServlet extends HttpServlet {
 
@@ -23,80 +21,22 @@ public class DetailServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-		// req.getParameter("name") 之字元編碼處理
-		// > TomCat 8.5: p.316(方案2) useBodyEncodingForURI="true" (修改 server.xml:63)
-		// 強迫在傳送 GET 的 req 參數時，使用與 POST 相同的字元編碼
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
 
 		// Query with getAll
-		if ("getAll".equals(action)) {
-			// --- 1. Start query data, don't need format check ---------------
-			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
-//			List<ProductDetail> list = detailDao.getAll();
-			List<ProductDetail> prodDetailList = detailDao.getAll();
-
-			// --- 2. Query finish. Prepare to send the success view ----------
-			HttpSession session = req.getSession(); // Session Tracking p.147
-//			session.setAttribute("list", list); // Put list(query from DB) to session
-			session.setAttribute("list", prodDetailList); // useBean id = "list" + page*.file use "list"
-			/*
-			 * Check what session.XetAttribute("XXX") carry
-			System.out.println("session.getAttribute(\"list\")" + session.getAttribute("list"));
-			*/
-			// --- 3. Send the success view -----------------------------------
-				// webapp(/)detail/listAllDetail_getFromSession.jsp
-//			System.out.println("I'm here---------------------------");
-			String url = "/detail/listAllDetail_getFromSession.jsp";
-			// p.195 1) 對項先執行(不管 4xx 5xx，先把 URL 貼過來) -> JSP file [/detail/http:/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
-//			url = "http://localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
-			// 2) http:// 拿掉 -> JSP file [/detail/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
-//			url = "localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
-			// 3) 保留 / -> JSP file [/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
-//			url = "/localhost:8081/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
-			// 4) 移除 (ROOT: /localhost:8081) -> JSP file [/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp] not found
-//			url = "/TIA10110-Webapp/detail/listAllDetail_getFromSession.jsp";
-			// 5) 移除 (專案名: /Webapp) -> Worked, url: http://localhost:8081/TIA10110-Webapp/detail/detail.do?action=getAll
-//			url = "/detail/listAllDetail_getFromSession.jsp";
-			// 6) 移除 同層(select_page.jsp)資料夾 /detail -> Worked, url: http://localhost:8081/TIA10110-Webapp/detail/detail.do?action=getAll
-//			url = "listAllDetail_getFromSession.jsp";
-			// Test p.109
-//			System.out.println(
-//					"req.getScheme() = " 		+ req.getScheme() + 
-//					"\nreq.getServerName() = " 	+ req.getServerName() +
-//					"\nreq.getServerPort() = " 	+ req.getServerPort() +
-//					"\nreq.getContextPath() = " + req.getContextPath() +
-//					"\nreq.getServletPath() = " + req.getServletPath() +
-//					
-//					"\nreq.getPathInfo() = " 	+ req.getPathInfo() +
-//					"\nreq.getPathTranslated() = " + req.getPathTranslated() +
-//					"\nreq.getRequestURI() = " 	+ req.getRequestURI() +
-//					"\nreq.getQueryString() = " + req.getQueryString() +
-//					"\nreq.getProtocol() = " 	+ req.getProtocol() +
-//					
-//					"\nreq.getMethod() = " 		+ req.getMethod() +
-//					"\nreq.getHeader(\"Content-Type\") = " + req.getHeader("Content-Type") +
-//					"\nreq.getContentType() = " + req.getContentType() +
-//					"\nreq.getContentLength() = " + req.getContentLength() 
-//					);
-			
-				// 成功轉交 listAllDetail_getFromSession.jsp | p.192
-			RequestDispatcher successView = req.getRequestDispatcher(url); 
-			successView.forward(req, res);
-//			System.out.println("I've forward!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			return;
-		}
+//		if ("getAll".equals(action)) {// Since getAll doesn't need to check, link to JSP directly.}
 		
 		// Query with FindByPk
-		if ("getOne_For_Display".equals(action)) { // 來自 select_page.jsp 的請求
+		if ("getOneForDisplay".equals(action)) { // 來自 select_page.jsp 的請求 | modify name > W dorked
 			
 			List<String> errorMsgs = new LinkedList<String>();
 			// Store in req scope for ErrorPage view
-			// p.121 小 > 協同的範圍
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			// --- 1. Receive request parameters, format check ----------------
-			String str = req.getParameter("prod_detail_id");
+//			String str = req.getParameter("prod_detail_id"); // modify name worked
+			String str = req.getParameter("prodDetailId");
 			if (str == null || (str.trim()).length() == 0) {
 				errorMsgs.add("請輸入明細編號");
 			}
@@ -121,8 +61,14 @@ public class DetailServlet extends HttpServlet {
 			}
 			
 			// --- 2. Start query data ----------------------------------------
-			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
-			ProductDetail prodDetail = detailDao.findByPK(prodDetailId);
+			// DAO 做法
+//			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
+//			ProductDetail prodDetail = detailDao.findByPK(prodDetailId);
+//			if (prodDetail == null) { errorMsgs.add("查無資料"); }
+
+			// Service 做法 
+			ProductDetailService detailSvc = new ProductDetailService();
+			ProductDetail prodDetail = detailSvc.getOneDetail(prodDetailId);
 			if (prodDetail == null) { errorMsgs.add("查無資料"); }
 			// Send the use back to the form when errors
 			if (!errorMsgs.isEmpty()) {
@@ -136,7 +82,94 @@ public class DetailServlet extends HttpServlet {
 			String url = "/detail/listOneDetail.jsp";
 			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneDetail.jsp
 			successView.forward(req, res);
-		}
+		} // END of if ("getOneForDisplay".equals(action)
+		
+		if ("getOneForUpdate".equals(action)) { // 來自 listAllDetail.jsp 的請求
+			List<String> errorMsgs = new LinkedList<String>();
+			// Store in req scope for ErrorPage view
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			// --- 1. Check input format --------------------------------------
+			Integer prodDetailId = Integer.valueOf(req.getParameter("prodDetailId"));
+			// --- 2. Query data ----------------------------------------------
+			var detailSvc = new ProductDetailService();
+			ProductDetail prodDetail = detailSvc.getOneDetail(prodDetailId);
+			// --- 3. Finish query. Prepare to send the success view ----------
+			req.setAttribute("prodDetail", prodDetail);
+			String url = "/detail/updateDetailInput.jsp";
+			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 updateDetailInput.jsp
+			successView.forward(req, res);
+		} // END of if ("getOneForUpdate".equals(action))
+		
+		if ("update".equals(action)) { // 來自 updateDetailInput.jsp 的請求
+			
+			List<String> errorMsgs = new LinkedList<String>();
+			// Store in req scope for ErrorPage view, check if necessary?
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			// Check if I can forward productDetail obj from jsp to Servlet
+//			ProductDetail prodDetail = (ProductDetail)req.getAttribute("prodDetail");
+//			System.out.println(prodDetail);
+			// --- 1. Check input format --------------------------------------
+			Integer prodDetailId = Integer.valueOf(req.getParameter("prodDetailId"));
+			Integer prodOrdId = Integer.valueOf(req.getParameter("prodOrdId")); // Worked
+			Integer prodId = Integer.valueOf(req.getParameter("prodId"));
+			Integer unitPrice = Integer.valueOf(req.getParameter("unitPrice"));
+			Integer prodCount = Integer.valueOf(req.getParameter("prodCount")); // Should > 0
+			Integer prodSum = unitPrice * prodCount;
+			// data forward check
+//			System.out.println("JSP: prodDetailId = " + prodDetailId);
+//			System.out.println("EL : prodOrdId    = " + prodOrdId);
+//			System.out.println("EL : unitPrice    = " + unitPrice);
+//			System.out.println("EL : prodCount    = " + prodCount);
+//			System.out.println("EL : prodSum      = " + prodSum);
+			
+			ProductDetail prodDetail = new ProductDetail(prodDetailId, prodOrdId, prodId, unitPrice, prodCount, prodSum);	
+			if (prodCount < 1) {
+				errorMsgs.add("商品數量需 > 0");
+				prodDetail.setProdCount(1); // 將商品數量設為 1
+				prodDetail.setProdSum(prodDetail.getUnitPrice()); // 將明細小計設為 1*價格 
+			} // END of (prodCount <= 0)
+			
+			if (!errorMsgs.isEmpty()) {
+				req.setAttribute("prodDetail", prodDetail);
+				RequestDispatcher failureView = req.getRequestDispatcher("/detail/updateDetailInput.jsp");
+				failureView.forward(req, res);
+				return; // 程式中斷
+			} // END of if (!errorMsgs.isEmpty())
 
+			// --- 2. Update data ---------------------------------------------
+			var detailSvc = new ProductDetailService();
+			prodDetail = detailSvc.updateDetail(prodDetail); // 反正都包好了，直接用 obj
+			// --- 3. Update success. Prepare send the success view -----------
+			req.setAttribute("prodDetail", prodDetail); // After DB update success, save obj to req 
+			String url = "/detail/listOneDetail.jsp";
+			RequestDispatcher successView = req.getRequestDispatcher(url); // forward to listOneDetail.jsp 
+			successView.forward(req, res);
+			
+		} // END of if ("update".equals(action))
+		
+		if ("insert".equals(action)) { // 來自 allDetail.jsp 的請求 | 未實作
+			// Unimplemented
+		} // END of if ("insert".equals(action))
+		
+		if ("delete".equals(action)) { // 來自 listAllDetail.jsp 的請求
+			
+			List<String> errorMsgs = new LinkedList<String>();
+			// Store in req scope for ErrorPage view, check if necessary?
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			// --- 1. Receive parameter ---------------------------------------
+			// Get from table, no need check format
+			Integer prodDetailId = Integer.valueOf(req.getParameter("prodDetailId"));
+			// --- 2. Delete data ---------------------------------------------
+			var detailSvc = new ProductDetailService();
+			detailSvc.deleteDetail(prodDetailId);
+			
+			// --- 3. Finish delete. Prepare send the success view ------------
+			String url = "/detail/listAllDetail.jsp";
+			RequestDispatcher successView = req.getRequestDispatcher(url);
+			successView.forward(req, res);
+		} // END of if ("delete".equals(action))
 	}
 }

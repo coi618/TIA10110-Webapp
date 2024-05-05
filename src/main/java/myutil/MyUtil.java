@@ -5,6 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public final class MyUtil {
 	public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 	
@@ -17,6 +22,7 @@ public final class MyUtil {
 	
 	public static final String USER = "root";
 	public static final String PASSWORD = "123456";
+	public static final String CONN_POOL = "java:comp/env/jdbc/G2Product";
 	
 	/* My own Driver loader, just for code readable */
 	public static void myLoadDriver() {
@@ -25,6 +31,20 @@ public final class MyUtil {
 		} catch (ClassNotFoundException ce) {
 			ce.printStackTrace();
 		}
+	}
+	
+	// Connection Pool version
+	public static DataSource myConnectionPool() {
+		DataSource ds = null;
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup(CONN_POOL);
+		} catch (NamingException ne) {
+			System.err.println("Error when establish DataSource.");
+			ne.printStackTrace();
+		}
+		return ds;
+		
 	}
 	
 	/* CloseResources */

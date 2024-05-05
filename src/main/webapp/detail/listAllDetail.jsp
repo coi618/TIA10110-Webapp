@@ -4,10 +4,10 @@
 <%@ page import="com.product_detail.model.*"%>
 <%-- 此頁練習採用 EL 的寫法取值 --%>
 <%
-	ProductDetailDAO detailDAO = new ProductDetailDAOImpl();
-	/* 此行的 list 物件將提供 page1.file 的第 11(? 行取得查詢到的總筆數，再由 page1.file 進行分頁 */
-	List<ProductDetail> list = detailDAO.getAll();
-	/* 將上一行的 list 變數(物件)存入當前頁面 pageContext，再由底下的第 37(tmp 行的 JSTL forEach 印出結果 */
+	ProductDetailService detailSvc = new ProductDetailService(); 
+	/* 此行的 list 物件將提供 page1.file 的 (rowNum = list.size();) 取得查詢到的總筆數，再由 page1.file 進行分頁 */
+	List<ProductDetail> list = detailSvc.getAll();
+	/* 將上一行的 list 變數(物件)存入當前頁面 pageContext，再由底下的 forEach 印出結果 */
 	pageContext.setAttribute("list", list); 
 %>
 
@@ -31,11 +31,6 @@
 		color: blue;
 		display: inline;
 	}
-<%-- 
-</style>
-merge 2 style? 
-<style>
---%>
 	table {
 		width: 800px;
 		background-color: white;
@@ -49,18 +44,20 @@ merge 2 style?
 		padding: 5px;
 		text-align: center;
 	}
+	img#back {
+		width: 100px; 
+		height: 32px; 
+		border: 0;
+	}
 </style>
 </head>
 <body bgcolor='white'>
 	<h4>此頁練習採用 EL 的寫法取值:</h4>
-	<%-- 
-	<p>Zoaholic: 1</p>
-	 --%>
 	<table id="table-1">
 		<tr>
 			<td>
 				<h3>所有明細資料 - listAllDetail.jsp</h3>
-				<h4><a href="select_page.jsp"><img src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
+				<h4><a href="selectPage.jsp"><img src="images/back1.gif" id="back">回首頁</a></h4>
 			</td>
 		</tr>
 	</table>
@@ -78,16 +75,8 @@ merge 2 style?
 			<th>刪除</th>
 		</tr>
 		
-		<%@ include file="page1.file" %>
-		<%-- 
-		<%@ include file="page1.jsp" %> 
-		--%>
-		<%-- c:forEach p.253 --%>
-		<%-- 
-		<p>list: </p>
-		<c:out value="${list}"></c:out>
-		<p>pageIndex=<%=pageIndex%> | ${pageIndex}</p> <%-- 0 | "" -- %>
-		 --%>
+		<%@ include file="page1.jp" %> 
+
 		<c:forEach var="prodDetail" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>">
 			<tr>
 				<td>${prodDetail.prodDetailId}</td>
@@ -115,9 +104,7 @@ merge 2 style?
 			</tr>
 		</c:forEach> 
 	</table>
-	<%-- 
-	<%@ include file="page2.jsp" %> 
-	--%>
-	<%@ include file="page2.file" %>
+
+	<%@ include file="page2.jp" %> 
 	</body>
 </html>

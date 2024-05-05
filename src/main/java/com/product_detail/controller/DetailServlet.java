@@ -25,24 +25,23 @@ public class DetailServlet extends HttpServlet {
 		String action = req.getParameter("action");
 
 		// Query with getAll
-//		if ("getAll".equals(action)) {// Since getAll doesn't need to check, link to JSP directly.}
+//		if ("getAll".equals(action)) {// In 0201, getAll(link) doesn't need to check, link to JSP directly.}
 		
 		// Query with FindByPk
-		if ("getOneForDisplay".equals(action)) { // 來自 select_page.jsp 的請求 | modify name > W dorked
+		if ("getOneForDisplay".equals(action)) { // 來自 selectPage.jsp 的請求
 			
 			List<String> errorMsgs = new LinkedList<String>();
 			// Store in req scope for ErrorPage view
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			// --- 1. Receive request parameters, format check ----------------
-//			String str = req.getParameter("prod_detail_id"); // modify name worked
 			String str = req.getParameter("prodDetailId");
 			if (str == null || (str.trim()).length() == 0) {
 				errorMsgs.add("請輸入明細編號");
 			}
-			// Send the use back to the form when errors
+			// Forward back with errorMsgs
 			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/detail/select_page.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/detail/selectPage.jsp");
 				failureView.forward(req, res);
 				return; // 中斷程式
 			}
@@ -53,26 +52,21 @@ public class DetailServlet extends HttpServlet {
 			} catch (Exception e) {
 				errorMsgs.add("明細ID格式不正確");
 			}
-			// Send the use back to the form when errors
+			// Forward back with errorMsgs
 			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/detail/select_page.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/detail/selectPage.jsp");
 				failureView.forward(req, res);
 				return; // 中斷程式
 			}
 			
 			// --- 2. Start query data ----------------------------------------
-			// DAO 做法
-//			ProductDetailDAO detailDao = new ProductDetailDAOImpl();
-//			ProductDetail prodDetail = detailDao.findByPK(prodDetailId);
-//			if (prodDetail == null) { errorMsgs.add("查無資料"); }
-
 			// Service 做法 
 			ProductDetailService detailSvc = new ProductDetailService();
 			ProductDetail prodDetail = detailSvc.getOneDetail(prodDetailId);
 			if (prodDetail == null) { errorMsgs.add("查無資料"); }
-			// Send the use back to the form when errors
+			// Forward back with errorMsgs
 			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/detail/select_page.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/detail/selectPage.jsp");
 				failureView.forward(req, res);
 				return; // 中斷程式
 			}
@@ -156,7 +150,7 @@ public class DetailServlet extends HttpServlet {
 		if ("delete".equals(action)) { // 來自 listAllDetail.jsp 的請求
 			
 			List<String> errorMsgs = new LinkedList<String>();
-			// Store in req scope for ErrorPage view, check if necessary?
+			// Store in req scope for ErrorPage view
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			// --- 1. Receive parameter ---------------------------------------

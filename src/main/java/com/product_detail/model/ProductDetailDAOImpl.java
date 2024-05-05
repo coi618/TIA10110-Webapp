@@ -18,6 +18,9 @@ import javax.naming.NamingException;
 
 public class ProductDetailDAOImpl implements ProductDetailDAO {
 	// 一個應用程式中，針對一個資料庫，共用一個 DataSource 即可
+// Servers > cat > context.xml
+// <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxIdle="10" maxTotal="20" maxWaitMillis="-1" name="jdbc/G2Product"   password="123456" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/g2_product?serverTimezone=Asia/Taipei" username="root"/>	
+
 //	TIA10110-Webapp >> web.xml nl: 22-27			
 // 	<resource-ref>
 // 		<description>DB Connection</description>
@@ -25,17 +28,12 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 // 		<res-type>javax.sql.DataSource</res-type>
 // 		<res-auth>Container</res-auth>
 //	</resource-ref>
-	private static DataSource ds = MyUtil.myConnectionPool();
-//	static {
-//		try {
-//			Context ctx = new InitialContext();
-//			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/G2Product");
-//		} catch (NamingException ne) {
-//			System.err.println("Error when establish DataSource.");
-//			ne.printStackTrace();
-//		}
-//	}
-//	ds = MyUtil.myConnectionPool();
+
+	private static DataSource ds = null;
+	// Initial connextion pool
+	static {
+		ds = MyUtil.myConnectionPool();
+	}
 	
 	// Prepare SQL commands
 	private static final String PROD_DETAIL_COL = 
@@ -115,7 +113,7 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 	}
 
 	@Override
-	public void delete(Integer prodDetailId) { // Not use
+	public void delete(Integer prodDetailId) { 
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		

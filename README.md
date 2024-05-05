@@ -1,5 +1,9 @@
 # TIA10110-Webapp
-ServLet homework project 201
+ServLet homework project 0201
+
+Q-06: 不能直接開放的頁面如何導回首頁?
+
+Q-05: How to forward productDetail obj from jsp to Servlet
 
 Q-04: (listAllDetail*.jsp) p.218 useBean id:以專案分工命名, 那 page1/2.file 裡的 list 如何設定?
 

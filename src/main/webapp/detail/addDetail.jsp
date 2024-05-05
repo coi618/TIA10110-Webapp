@@ -48,14 +48,11 @@
 </style>
 </head>
 <body bgcolor='white'>
-	<%-- 
-	<p>Zoaholic: 1</p>
-	 --%>
 	<table id="table-1">
 		<tr>
 			<td>
 				<h3>明細資料新增 - addDetail.jsp</h3>
-				<h4><a href='select_page.jsp'><img id="back" src="images/back1.gif">回首頁</a></h4>
+				<h4><a href='selectPage.jsp'><img id="back" src="images/back1.gif">回首頁</a></h4>
 			</td>
 		</tr>
 	</table>

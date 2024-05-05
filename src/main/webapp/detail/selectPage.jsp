@@ -28,22 +28,17 @@
 	</style>
 </head>
 <body bgcolor='white'>
-<h2>select_page.jsp</h2>
 
 	<table id="table-1">
 		<tr><td><h3>TIA10110-Webapp Product detail: Home</h3><h4>( MVC )</h4></td></tr>
 	</table>
-	<p>This is the Home page for TIA10110-Webapp Product detail: Home</p>
-	<%-- 
-	<p>Zoaholic: 2</p>
-	 --%>
+	<p>This is the Home page for TIA10110-Webapp Product detail</p>
+
 	<h3>資料查詢:</h3>
-	<%--
-	EL p.228 
-	 --%>
+
 	<%-- ErrorMsgs list --%>
 	<c:if test="${not empty errorMsgs}">
-		<font style="color:red">請修正以下錯誤:</font>
+		<p style="color:red">請修正以下錯誤:</p>
 		<ul>
 			<c:forEach var="message" items="${errorMsgs}">
 				<li style="color:red">${message}</li>
@@ -52,22 +47,11 @@
 	</c:if>
 	
 	<ul>
-	<%-- 404 -1. Cannot find listAllDetail_getFromSession.jsp --%>
-		<%-- BUG: Don't know why but work. Maybe Project > Clean... --%>
-		<%-- 
-		<li><a href='detail.do?action=getAll'>List</a> all Detail (getFromSession).<br></li> 
-		--%>
-	<%-- Not print data : Controller: session.setAttribute("list", list) --%>
-		
-		<%-- 
-		<li><a href='listAllDetail_byDAO.jsp'>List</a> all Detail (byDAO).<br></li> 
-		// Since getAll doesn't need to check, link to JSP directly.
-		--%>
 		<li><a href='listAllDetail.jsp'>List</a> all Detail.<br><br></li>
 		
 		<li>
 			<FORM METHOD="post" ACTION="detail.do" >
-			<b>輸入明細ID (Ex: 12000001):</b>
+			<span>輸入明細ID (Ex: 12000001):</span>
 			<input type="text" name="prodDetailId">
 			<input type="hidden" name="action" value="getOneForDisplay">
 			<input type="submit" value="送出">
@@ -75,8 +59,9 @@
 		</li>
 		
 		<li>
+											  <%-- name="form1" for JS --%>
 			<FORM METHOD="post" ACTION="detail.do" name="form1">
-				<b>輸入明細ID (Ex: 12000001):</b>
+				<span>輸入明細ID (Ex: 12000001):</span>
 				<input type="text" name="prodDetailId">
 				<input type="hidden" name="action" value="getOneForDisplay">
 				<input type="button" value="送出" onclick="fun1()">
@@ -84,16 +69,14 @@
 			</FORM>
 		</li>
 		
-		<%-- Why useBean here? p.218 -> c:forEach using --%>
-		
 		<jsp:useBean id="detailDao" scope="page" class="com.product_detail.model.ProductDetailDAOImpl" />
 		 
-		<li> <%-- BUG: Options not show 4/30 -> 1) useBean id: case mismatch. 2) c:forEach var="productDetail" --%>
+		<li> 
 			<FORM METHOD="post" ACTION="detail.do">
-				<b>選擇明細ID:</b>
+				<span>選擇明細ID:</span>
 				<select size="1" name="prodDetailId">
 				
-					<c:forEach var="productDetail" items="${detailDao.all}"> <%-- ?什麼語法? .all 是什麼 -> getAll() 移除 get/set --%>
+					<c:forEach var="productDetail" items="${detailDao.all}"> 
 						<option value="${productDetail.prodDetailId}">${productDetail.prodDetailId}					
 					</c:forEach>
 				</select>
@@ -105,9 +88,8 @@
 	</ul>
 	
 	<h3>明細管理</h3>
-	<ul><li><a href='addDetail.jsp'>Add</a> a new Detail.</li></ul>
+	<ul><li><a href='addDetail.jsp'>Add</a> a new Detail. (Unimplemented)</li></ul>
 	
-	<%-- JS 檢查錯誤後，還是有紅字(controller check)跳出 -> JS verify: input type="button" --%>
 	<script>
 		function fun1() {
 			with(document.form1){
@@ -123,6 +105,5 @@
 			}
 		}
 	</script>
-	
 </body>
 </html>

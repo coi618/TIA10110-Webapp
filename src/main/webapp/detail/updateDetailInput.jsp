@@ -54,7 +54,7 @@
 			<td>
 				<h3>明細資料修改 - updateDetailInput.jsp</h3>
 				<p>單純功能展示，明細在正式專案實際不修改</p>
-				<h4><a href="select_page.jsp"><img src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
+				<h4><a href="selectPage.jsp"><img src="images/back1.gif" width="100" height="32" border="0">回首頁</a></h4>
 			</td>
 		</tr>
 	</table>

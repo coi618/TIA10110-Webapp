@@ -36,4 +36,13 @@
 		<url-pattern>/detail/detail.do</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>OrderServlet</servlet-name>
+		<servlet-class>com.product_order.controller.OrderServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OrderServlet</servlet-name>
+		<url-pattern>/order/order.do</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

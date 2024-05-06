@@ -96,12 +96,26 @@
 				<%-- 之後想想怎麼自動計算 --%>
 				<td><span><%=prodDetail.getProdSum()%> # 無連動</span></td>
 			</tr>
+			
+			<jsp:useBean id="orderSvc" scope="page" class="com.product_order.model.ProductOrderService" />
+			<tr>
+				<td>訂單:<font color=red><b>*</b></font></td> 
+				<td>
+					<select size="1" name="prodOrdId">
+						<c:forEach var="prodOrd" items="${orderSvc.all}">
+							<option value="${prodOrd.prodOrdId}" ${(prodDetail.prodDetailId==prodOrd.prodOrdId)?'selected':'' } >${prodOrd.prodOrdId}
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
 		</table>
 		<br>
 									   <%-- value update, how to configure? --%>
 		<input type="hidden" name="action" value="update" > 
 		<input type="hidden" name="prodDetailId" value="<%=prodDetail.getProdDetailId()%>" >
+		<%-- 
 		<input type="hidden" name="prodOrdId" value="${prodDetail.prodOrdId}" >
+		 --%>
 		<input type="hidden" name="prodId" value="${prodDetail.prodId}" >
 		<input type="hidden" name="unitPrice" value="${prodDetail.unitPrice}" >
 		

@@ -40,7 +40,6 @@ public class ProductOrder implements Serializable {
 	public Integer getProdOrdId() {
 		return prodOrdId;
 	}
-	
 	public void setProdOrdId(Integer prodOrdId) {
 		this.prodOrdId = prodOrdId;
 	}
@@ -83,12 +82,10 @@ public class ProductOrder implements Serializable {
 	
 	@Override
 	public String toString() {
-		return prodOrdId + ", " + memId + ", " + estTime + ", " 
-				+ ordStatus + ", " + total + ", " + recipient + ", "
-				+ recAddr;
+		String result = String.format(
+			"%9d |%6d |%10tF %tT |%10d |%6d |%8s |%10s ", 
+			prodOrdId, memId, estTime, estTime, ordStatus, total, recipient, recAddr
+		);
+		return result;
 	}
-	/*"ProductOrder [prodOrdId=" + prodOrdId + ", memId=" + memId + ", estTime=" + estTime
-				+ ", ordStatus=" + ordStatus + ", total=" + total + ", recipient=" + recipient + ", recAddr="
-				+ recAddr + "]"*/
-	
 }

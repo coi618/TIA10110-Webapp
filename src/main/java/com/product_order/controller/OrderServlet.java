@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 import javax.servlet.ServletException;
+import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -111,6 +112,12 @@ public class OrderServlet extends HttpServlet {
 			Integer total = 	Integer.valueOf(req.getParameter("total")); 
 			String  recipient = req.getParameter("recipient");
 			String  recAddr = 	req.getParameter("recAddr");
+			String recAddrReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9)]{2,200}$";
+			if (recAddr == null || recipient.trim().equals("")) { // .isEmpty() [1.6] | .length() == 0 / .equals("") [1.0]
+				errorMsgs.add("收件人地址 請勿空白");
+			} else if (!recAddr.trim().matches(recAddrReg)) { // 以下練習正規表示法
+				errorMsgs.add("收件人地址請勿使用標點符號、空格、特殊符號，且長度在2-200之間");
+			}
 			
 			// data forward check
 //			System.out.println("JSP: prodOrdId = " + prodOrdId);
@@ -145,8 +152,86 @@ public class OrderServlet extends HttpServlet {
 			
 		} // END of if ("update".equals(action))
 		
-		if ("insert".equals(action)) { // 來自 allDetail.jsp 的請求 | 未實作
-			// Unimplemented
+		if ("insert".equals(action)) { // 來自 addOrder.jsp 的請求 | 未實作
+			
+			List<String> errorMsgs = new LinkedList<String>();
+			// Store this set in the request scope, in case we need to
+			// send the ErrorPage view.
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			// --- 1. Check input format --------------------------------------
+//			Integer prodOrdId = Integer.valueOf(req.getParameter("prodOrdId").trim());
+			Integer prodOrdId = null; // PK auto increment, not receive from add obj
+			
+			Integer memId = null;
+			try {
+				memId = Integer.valueOf(req.getParameter("memId").trim());
+				if (memId <= 0) { // 未連動會員表格，無法判斷會員是否存在
+					errorMsgs.add("會員 ID 需 > 0 ");
+				}
+			} catch (NumberFormatException e) { // 無輸入的情況
+				memId = -1;
+				errorMsgs.add("請輸入會員 ID!");
+			}
+			
+//			Timestamp estTime = Timestamp.valueOf(req.getParameter("estTime"));
+			Timestamp estTime = new Timestamp(System.currentTimeMillis()); // Assign current time when order establish
+			
+			Integer ordStatus = null;
+			try {
+				ordStatus = Integer.valueOf(req.getParameter("ordStatus")); // should return 0 or 1
+			} catch (NumberFormatException e) { // 無輸入的情況
+				ordStatus = -1; // should return 0 or 1, can I assign -1?
+				errorMsgs.add("請輸入訂單狀態!");
+			}
+			
+			Integer total = null;
+			try {
+			total = Integer.valueOf(req.getParameter("total")); // Should calculate automatically, but only check < 0 now
+			} catch (NumberFormatException e) { // 無輸入的情況
+				total = 0;
+				errorMsgs.add("請輸總額!");
+			} 
+			if (total < 0) {
+				errorMsgs.add("總額不得小於 0");
+			}
+			
+			String recipient = req.getParameter("recipient");
+			String recipientReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9‧ )]{2,50}$";
+			if (recipient == null || recipient.trim().isEmpty()) { // .isEmpty() [1.6] | .length() == 0 / .equals("") [1.0]
+				errorMsgs.add("收件人姓名 請勿空白");
+			} else if (!recipient.trim().matches(recipientReg)) { // 以下練習正規表示法
+				errorMsgs.add("收件人姓名 只能是中、英、數字和空隔，且長度在2-50之間");
+			}
+			
+			String recAddr = req.getParameter("recAddr");
+			String recAddrReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9 )]{2,200}$";
+			if (recAddr == null || recAddr.trim().equals("")) { // .isEmpty() [1.6] | .length() == 0 / .equals("") [1.0]
+				errorMsgs.add("收件人地址 請勿空白");
+			} else if (!recAddr.trim().matches(recAddrReg)) { // 以下練習正規表示法
+				errorMsgs.add("收件人地址請勿使用標點符號、底線、特殊符號，且長度在2-200之間");
+			}
+			
+			// Package to a ProductOrder obj
+			var prodOrd = new ProductOrder(prodOrdId, memId, estTime, ordStatus, total, recipient, recAddr);
+			
+			// Send the data back to the form, if there were errors
+			if(!errorMsgs.isEmpty()) {
+				req.setAttribute("prodOrder", prodOrd); // 把剛才打的資料送回 addOrder.jsp
+				RequestDispatcher failureView = req.getRequestDispatcher("addOrder.jsp");
+				failureView.forward(req, res);
+				return;
+			}
+			
+			// --- 2. Insert data ---------------------------------------------
+			var ordSvc = new ProductOrderService();
+			prodOrd = ordSvc.addOrder(prodOrd);
+			// 未連動會員表格，無法判斷會員是否存在
+			
+			// --- 3. Insert success. Prepare send the success view -----------
+			String url = "listAllOrder.jsp"; // Check url
+			RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交listAllEmp.jsp
+			successView.forward(req, res);	
 		} // END of if ("insert".equals(action))
 		
 		if ("delete".equals(action)) { // 來自 listAllOrder.jsp 的請求

@@ -1,6 +1,8 @@
 # TIA10110-Webapp
 ServLet homework project 0201
 
+Q-08: 如何顯示圖片? /webapp/order/addOrder.jsp nl:57
+
 Q-07: 訂單狀態如何以文字顯示?
 
 Q-06: 不能直接開放的頁面如何導回首頁?

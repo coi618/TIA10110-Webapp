@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/g2_product?serverTimezone=Asia/Taipei</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">123456</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        
+        <!-- Increase by self -->
+        <property name="hibernate.show_sql">true</property>
+        <!-- Increase at class -->
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">validate</property>
+        
+        <!-- p.65 getCurrentSession() 需搭配系統組態檔設定 -->
+        <property name="hibernate.transaction.coordinator_class">jdbc</property> <!-- Hibernate default, can ignore -->
+        <property name="hibernate.current_session_context_class">thread</property> <!-- >= Hibernate 5 -->
+ 		<!-- Java Transaction API(JTA) cfg
+        <property name="hibernate.transaction.coordinator_class">jta</property> 
+        <property name="hibernate.current_session_context_class">jta</property>
+ 		 -->
+        
+        <!-- Lecture p.43 -->
+        <!-- <mapping class="idv.john.hellohibernate.Dept"/> -->
+        <!-- <mapping class="idv.john.vo.MyDept"/> -->
+        <mapping class="com.product.model.Product"/>
+    </session-factory>
+</hibernate-configuration>

@@ -143,7 +143,7 @@ public class DetailServlet extends HttpServlet {
 			
 		} // END of if ("update".equals(action))
 		
-		if ("insert".equals(action)) { // 來自 allDetail.jsp 的請求 | 未實作
+		if ("insert".equals(action)) { // 來自 addDetail.jsp 的請求 | 未實作
 			// Unimplemented
 		} // END of if ("insert".equals(action))
 		

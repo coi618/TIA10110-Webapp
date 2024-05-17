@@ -97,8 +97,8 @@
 					alert("請輸入商品訂單ID!");
 				} else if (isNaN(prodOrdId.value)){ // isNaN(): Not a Number
 					alert("商品訂單ID格式不正確"); 
-				} else if ((prodOrdId.value > 12999999) || (prodOrdId.value < 12000000))  {
-					alert("請輸入介於12000000~12999999之間的數字!");
+				} else if ((prodOrdId.value > 11999999) || (prodOrdId.value < 11000000))  {
+					alert("請輸入介於11000000~11999999之間的數字!");
 				} else {
 					submit();
 				}

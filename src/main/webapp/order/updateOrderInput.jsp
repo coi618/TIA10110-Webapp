@@ -72,7 +72,7 @@
 		</ul>
 	</c:if>
 	
-	<form method="post" action="order.do" name="form1"> #Here
+	<form method="post" action="order.do" name="form1"> 
 		<table>
 			<tr>
 				<td>商品訂單ID:<font color=red><b>*</b></font></td>
@@ -96,11 +96,17 @@
 			</tr>
 			<tr>
 				<td>收件人姓名:</td>
+				<%-- 
 				<td><span><%=prodOrd.getRecipient()%></span></td>
+				 --%>
+				<td><input type="text" name="recipient" value="<%=prodOrd.getRecipient()%>"></td>
 			</tr>
 			<tr>
 				<td>收件人地址:</td>
+				<%-- 
 				<td><span><%=prodOrd.getRecAddr()%></span></td>
+				 --%>
+				<td><input type="text" name="recAddr" value="${prodOrd.recAddr}"></td>
 			</tr>
 		</table>
 		<br>

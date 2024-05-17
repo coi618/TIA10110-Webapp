@@ -17,24 +17,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 public class ProductDetailDAOImpl implements ProductDetailDAO {
-	// 一個應用程式中，針對一個資料庫，共用一個 DataSource 即可
-// Servers > cat > context.xml
-// <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxIdle="10" maxTotal="20" maxWaitMillis="-1" name="jdbc/G2Product"   password="123456" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/g2_product?serverTimezone=Asia/Taipei" username="root"/>	
-
-//	TIA10110-Webapp >> web.xml nl: 22-27			
-// 	<resource-ref>
-// 		<description>DB Connection</description>
-// 		<res-ref-name>jdbc/G2Product</res-ref-name>
-// 		<res-type>javax.sql.DataSource</res-type>
-// 		<res-auth>Container</res-auth>
-//	</resource-ref>
-
-	private static DataSource ds = null;
-	// Initial connextion pool
-	static {
-		ds = MyUtil.myConnectionPool();
-	}
-	
 	// Prepare SQL commands
 	private static final String PROD_DETAIL_COL = 
 			"(prod_ord_id, prod_id, unit_price, prod_count, prod_sum)";
@@ -50,6 +32,34 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 	private static final String FIND_BY_PK = "SELECT * FROM product_detail WHERE prod_detail_id = ?";
 	private static final String GET_ALL = "SELECT * FROM product_detail";
 
+	// 一個應用程式中，針對一個資料庫，共用一個 DataSource 即可
+// Servers > cat > context.xml
+// <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxIdle="10" maxTotal="20" maxWaitMillis="-1" name="jdbc/G2Product"   password="123456" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/g2_product?serverTimezone=Asia/Taipei" username="root"/>	
+
+//		TIA10110-Webapp >> web.xml nl: 22-27			
+//	 	<resource-ref>
+//	 		<description>DB Connection</description>
+//	 		<res-ref-name>jdbc/G2Product</res-ref-name>
+//	 		<res-type>javax.sql.DataSource</res-type>
+//	 		<res-auth>Container</res-auth>
+//		</resource-ref>
+
+// 12 : Webapp >(new) META-INFO/context.xml
+
+//		private static final DataSource ds = MyUtil.myConnectionPool();
+//		private static DataSource ds = null;
+//		// Initial connection pool
+//		static {
+//			ds = MyUtil.myConnectionPool();
+//			System.out.println("detailDAOImpl ds.hashCode(): " + ds.hashCode());
+//		}
+		
+	/*
+	 * Error Msg:
+	 * javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or in an application resource file: java.naming.factory.initial...
+	 * Exception in thread "main" java.lang.NullPointerException: Cannot invoke "javax.sql.DataSource.getConnection()" because "com.product_detail.model.ProductDetailDAOImpl.ds" is null...
+	 */
+
 	// Change to Connection pool
 //	static { // DB step: 3-1
 //		MyUtil.myLoadDriver();
@@ -63,7 +73,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		try {
 			// Change to Connection pool
 //			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
-			con = ds.getConnection();
+//			con = ds.getConnection();
+			con = MyUtil.getMyDS().getConnection();
 			
 			pstmt = con.prepareStatement(INSERT_STMT);
 			// "(prod_ord_id, prod_id, unit_price, prod_count, prod_sum)";
@@ -90,7 +101,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		
 		try {
 //			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
-			con = ds.getConnection();
+//			con = ds.getConnection();
+			con = MyUtil.getMyDS().getConnection();
 			
 			pstmt = con.prepareStatement(UPDATE_STMT);
 			//"prod_ord_id = ?, prod_id = ?, unit_price = ?, prod_count = ?, prod_sum = ?"
@@ -119,7 +131,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		
 		try {
 //			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
-			con = ds.getConnection();
+//			con = ds.getConnection();
+			con = MyUtil.getMyDS().getConnection();
 			
 			pstmt = con.prepareStatement(DELETE_STMT);
 			
@@ -144,7 +157,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		
 		try {
 //			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
-			con = ds.getConnection();
+//			con = ds.getConnection();
+			con = MyUtil.getMyDS().getConnection();
 			
 			pstmt = con.prepareStatement(FIND_BY_PK);	// Get SQL command
 			pstmt.setInt(1, prodDetailId);	// Setup SQL command
@@ -179,7 +193,8 @@ public class ProductDetailDAOImpl implements ProductDetailDAO {
 		
 		try {
 //			con = DriverManager.getConnection(MyUtil.URL, MyUtil.USER, MyUtil.PASSWORD);
-			con = ds.getConnection();
+//			con = ds.getConnection();
+			con = MyUtil.getMyDS().getConnection();
 			
 			pstmt = con.prepareStatement(GET_ALL);	// Set SQL command
 			
